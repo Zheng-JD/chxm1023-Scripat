@@ -21,8 +21,7 @@ jobs:
     
     - name: Add upstream remote
       run: |
-        git remote add upstream https://github.com/chxm1023/Rewrite.git
-    
+        git remote add upstream https://github.com/Zheng-JD/chxm1023-Scripat.git
     - name: Fetch upstream
       run: |
         git fetch upstream
