@@ -1,0 +1,43 @@
+# 工作流名称
+name: chxm1023 Sync Fork (Main Branch Only)
+
+# 触发条件
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天午夜运行
+  workflow_dispatch:  # 允许手动触发
+
+# 工作流中的作业
+jobs:
+  sync:
+    runs-on: ubuntu-latest  # 在最新版本的 Ubuntu 上运行
+    
+    steps:
+    # 步骤1：检出代码，只检出 main 分支
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 获取所有历史记录，而不是仅最近的提交
+        ref: main  # 明确指定检出 main 分支
+    
+    # 步骤2：配置 Git
+    - name: Configure Git
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+    
+    # 步骤3：添加上游仓库
+    - name: Add upstream remote
+      run: |
+        git remote add upstream https://github.com/chxm1023/Rewrite.git
+    
+    # 步骤4：获取上游仓库的 main 分支更新
+    - name: Fetch upstream
+      run: |
+        git fetch upstream main
+    
+    # 步骤5：同步 main 分支并推送更新
+    - name: Sync fork
+      run: |
+        git checkout main  # 确保我们在 main 分支上
+        git merge upstream/main  # 合并上游 main 分支的更改
+        git push origin main  # 推送更新到 fork 的仓库的 main 分支
